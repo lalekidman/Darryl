@@ -1,0 +1,85 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "project": {
+    "name": "views"
+  },
+  "apps": [
+    {
+      "root": "src",
+      "outDir": "dist",
+      "assets": [
+        "assets",
+        "favicon.ico"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "test.ts",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "app/dashboard/html/bootstrap/dist/css/bootstrap.min.css",
+        "app/dashboard/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css",
+        "app/dashboard/plugins/bower_components/toast-master/css/jquery.toast.css",
+        "app/dashboard/plugins/bower_components/morrisjs/morris.css",
+        "app/dashboard/plugins/bower_components/chartist-js/dist/chartist.min.css",
+        "app/dashboard/plugins/bower_components/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css",
+        "app/dashboard/html/css/animate.css",
+        "app/dashboard/html/css/colors/default.css",
+        "app/dashboard/html/css/stylex.css"
+      ],
+      "scripts": [
+        "app/dashboard/plugins/bower_components/jquery/dist/jquery.min.js",
+        "app/dashboard/html/bootstrap/dist/js/bootstrap.min.js",
+        "app/dashboard/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js",
+        "app/dashboard/plugins/bower_components/waypoints/lib/jquery.waypoints.js",
+        "app/dashboard/plugins/bower_components/counterup/jquery.counterup.min.js",
+        "app/dashboard/plugins/bower_components/chartist-js/dist/chartist.min.js",
+        "app/dashboard/plugins/bower_components/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js",
+        "app/dashboard/plugins/bower_components/jquery-sparkline/jquery.sparkline.min.js",
+        "app/dashboard/plugins/bower_components/toast-master/js/jquery.toast.js",
+        "app/dashboard/html/js/jquery.slimscroll.js",
+        "app/dashboard/html/js/waves.js",
+        "app/dashboard/html/js/custom.min.js",
+        "app/dashboard/html/js/dashboard1.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  "e2e": {
+    "protractor": {
+      "config": "./protractor.conf.js"
+    }
+  },
+  "lint": [
+    {
+      "project": "src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "src/tsconfig.spec.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "e2e/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    }
+  ],
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "defaults": {
+    "styleExt": "css",
+    "class": {
+      "spec": false
+    },
+    "component": {}
+  }
+}

@@ -1,0 +1,24 @@
+{
+    "remotePath": "/var/www/serpentcms_v2",
+    "host": "192.168.88.40",
+    "username": "root",
+    "password": "ast3dial",
+    "port": 22,
+    "secure": false,
+    "protocol": "sftp",
+    "uploadOnSave": false,
+    "passive": false,
+    "debug": false,
+    "privateKeyPath": null,
+    "passphrase": null,
+    "ignore": [
+        "\\.vscode",
+        "\\.git",
+        "\\.DS_Store"
+    ],
+    "generatedFiles": {
+        "uploadOnSave": true,
+        "extensionsToInclude": [],
+        "path": ""
+    }
+}

@@ -1,0 +1,35 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+      <h1>Users</h1>
+    </div>
+    <div class="col-md-2 col-md-push-8">
+      <br>
+      <button class='btn btn-primary' routerLink="/users/new" >Add New</button>
+    </div>
+  </div>
+  <hr>
+  <table class="table table-bordered table-responsive table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Roles</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor ='let user of users;'>
+        <td>{{user.name}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.roles}}</td>
+        <td>
+          <button class='btn btn-info'>edit</button>
+          <button class='btn btn-danger'>delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
