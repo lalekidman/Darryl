@@ -69,6 +69,7 @@ app.use((req, res, next) => {
 app.use('/api/users', require('./routes/users'))
 app.use('/api/admin', require('./routes/admin'))
 app.use('/api/license', require('./routes/license'))
+app.use('/api/brandedsms', require('./routes/branded-sms'))
 // app.use(require('./routes/home'))
 
 http.listen(port, () => {
