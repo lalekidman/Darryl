@@ -26,6 +26,16 @@ var brandedSMS = new mongo.Schema({
       date: {
         type: Date,
         default: Date.now
+      },
+      deleted: {
+        date: {
+          type: Date,
+          default: Date.now
+        },
+        status: {
+          type: Number,
+          default: 0
+        }
       }
     }
   ],

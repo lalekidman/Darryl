@@ -23,17 +23,18 @@ app.post('/', (req, res) => {
 app.get('/', (req, res) => {
   res.type('application/json')
   console.log('Ping here')
-  // let result = {
-  //   data: [],
-  //   err: null
-  // }
+  let result = {
+    data: [],
+    err: null
+  }
   user.lists().then((data) => {
-    res.send(JSON.stringify({
-      data: data
-    }, null, 2))
+    result.data = data
+    return true
   }).catch((err) => {
-    res.status(404)
-    res.end()
+    result.err = err.message
+    return true
+  }).then(() => {
+    res.send(JSON.stringify(result, null, 2))
   })
 })
 app.put('/', (req, res) => {
@@ -64,7 +65,7 @@ app.delete('/', (req, res) => {
     data: [],
     err: null
   }
-  console.log('USEsR DATA', userData)
+  console.log('DELETE:SDD: ', userData)
   user.deletes(userData).then((data) => {
     result.data = data
     res.send(JSON.stringify(result, null, 2))
@@ -89,6 +90,23 @@ app.put('/set-active-status', (req, res) => {
     res.end()
   })
 })
+app.get('/without-license', (req, res) => {
+  res.type('application/json')
+  let result = {
+    data: {},
+    err: null
+  }
+  user.withOutLicense().then((data) => {
+    result.data = data
+    return true
+  }).catch((err) => {
+    result.err = err.message
+    return true
+  }).then(() => {
+    res.send(JSON.stringify(result, null, 2))
+  })
+})
+
 app.get('/:accountId', (req, res) => {
   res.type('application/json')
   const {accountId} = req.params
@@ -99,10 +117,12 @@ app.get('/:accountId', (req, res) => {
   }
   user.findOne({licenseId, accountId}).then((data) => {
     result.data = data
-    res.send(JSON.stringify(result, null, 2))
+    return true
   }).catch((err) => {
-    res.status(404)
-    res.end()
+    result.err = err.message
+    return true
+  }).then(() => {
+    res.send(JSON.stringify(result, null, 2))
   })
 })
 

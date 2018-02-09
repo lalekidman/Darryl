@@ -98,8 +98,6 @@ class Users extends db {
   }
   setActiveStatus ({active, accountId}) {
     const self = this
-    console.log('STATUSS: ', active)
-    console.log('STATUSS: ', active ? 0 : 1)
     return self.user.update({
       _id: self.ObjectId(accountId)
     }, {
@@ -144,6 +142,16 @@ class Users extends db {
         }
       },
       {
+        $match: {
+          'UF.deleted': 0
+        }
+      },
+      {
+        $sort: {
+          'UF.deleted': 1
+        }
+      },
+      {
         $group: {
           _id: {
             id: '$UF._id',
@@ -185,7 +193,11 @@ class Users extends db {
           $match: {
             _id: {
               $nin: accountIds
-            },
+            }
+          }
+        },
+        {
+          $match: {
             deleted: 0
           }
         },
@@ -204,8 +216,63 @@ class Users extends db {
       ])
     }).then((data) => {
       return userData.concat(data)
-    }).catch((err) => {
-      console.log(err)
+    })
+  }
+  withOutLicense () {
+    let self = this
+    return new Promise(resolve => {
+      resolve(self.license.aggregate([
+        {
+          $match: {
+            deleted: 0
+          }
+        },
+        {
+          $sort: {
+            deleted: 1
+          }
+        },
+        {
+          $unwind: {
+            preserveNullAndEmptyArrays: false,
+            path: '$members'
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            userId: {
+              $addToSet: '$members.account_id'
+            }
+          }
+        }
+      ]).then(res => {
+        if (res.length >= 1) {
+          return self.user.aggregate([
+            {
+              $match: {
+                _id: {
+                  $nin: res[0].userId
+                },
+                deleted: 0
+              }
+            },
+            {
+              $sort: {
+                _id: 1
+              }
+            },
+            {
+              $project: {
+                _id: 0,
+                id: '$_id',
+                name: 1
+              }
+            }
+          ])
+        }
+        throw new Error('No Id Found.')
+      }))
     })
   }
 }

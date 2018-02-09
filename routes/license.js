@@ -4,7 +4,6 @@ let license = new (require('../class/license'))()
 app.post('/', (req, res) => {
   res.type('application/json')
   const d = req.body
-  console.log('DATA: ', d)
   license.add(d).then((data) => {
     res.send(JSON.stringify({
       err: null,
@@ -36,6 +35,7 @@ app.put('/', (req, res) => {
     data: [],
     err: null
   }
+  console.log('updated submit data: ', d)
   license.update(d).then((data) => {
     result.data = data
     res.send(JSON.stringify(result, null, 2))
@@ -75,12 +75,48 @@ app.get('/:licenseId', (req, res) => {
   const {licenseId} = req.params
   license.findOne(licenseId).then((data) => {
     result.data = data
-    res.send(JSON.stringify(result, null, 2))
+    return true
   }).catch((err) => {
     result.err = err.message
-    res.status(404).send(JSON.stringify(result, null, 2))
-    res.end()
+    return true
+  }).then(() => {
+    res.send(JSON.stringify(result, null, 2))
   })
 })
 
+app.get('/:licenseId/members', (req, res) => {
+  res.type('application/json')
+  const {licenseId} = req.params
+  let result = {
+    error: null,
+    data: []
+  }
+  license.getMembers(licenseId).then(data => {
+    result.data = data
+    return result
+  }).catch(err => {
+    result.error = err.message
+    return result
+  }).then(data => {
+    res.send(JSON.stringify(result, null, 2))
+  })
+})
+app.put('/:licenseId/members', (req, res) => {
+  res.type('application/json')
+  const {licenseId} = req.params
+  const {members} = req.body
+  let result = {
+    error: null,
+    data: []
+  }
+  license.saveMembers({id: licenseId, newMembers: members}).then(data => {
+    result.data = data
+    return result
+  }).catch(err => {
+    result.error = err.message
+    return result
+  }).then(data => {
+    res.send(JSON.stringify(result, null, 2))
+  })
+})
 module.exports = app

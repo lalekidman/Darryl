@@ -17,7 +17,13 @@ class License extends db {
     }, {
       email: 1,
       name: 1,
-      package: 1
+      package: 1,
+      status: 1
+    }).then(res => {
+      const data = JSON.parse(JSON.stringify(res))
+      const {status} = data
+      const {demo = 0, disconnected = 0} = status
+      return Object.assign(data, {demoStatus: demo, disconnectedStatus: disconnected})
     })
   }
   add (d) {
@@ -35,7 +41,9 @@ class License extends db {
       $set: {
         name: d.name,
         email: d.email,
-        package: d.package
+        package: d.package,
+        'status.demo': d.demoStatus,
+        'status.disconnected': d.disconnectedStatus
       }
     })
   }
@@ -114,6 +122,102 @@ class License extends db {
         }
       }
     ])
+  }
+  getMembers (id) {
+    const self = this
+    return new Promise(resolve => {
+      resolve(self.license.aggregate([
+        {
+          $match: {
+            _id: self.ObjectId(id)
+          }
+        },
+        {
+          $sort: {
+            _id: 1
+          }
+        },
+        {
+          $unwind: {
+            preserveNullAndEmptyArrays: true,
+            path: '$members'
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'members.account_id',
+            foreignField: '_id',
+            as: 'UF'
+          }
+        },
+        {
+          $unwind: {
+            preserveNullAndEmptyArrays: true,
+            path: '$UF'
+          }
+        },
+        {
+          $match: {
+            'UF.deleted': 0
+          }
+        },
+        {
+          $sort: {
+            'UF.deleted': 1
+          }
+        },
+        {
+          $group: {
+            _id: {
+              id: '$UF._id',
+              name: '$UF.name',
+              license: {
+                id: '$_id',
+                name: '$name',
+                code: '$code'
+              }
+            }
+          }
+        }
+      ]).then(res => {
+        return res.map((el) => (el._id))
+      }))
+    })
+  }
+  saveMembers ({id, newMembers}) {
+    const self = this
+    return new Promise(resolve => {
+      resolve(self.license.findOne({
+        _id: self.ObjectId(id)
+      }).then(res => {
+        const {members} = res
+        const newMemLen = newMembers.length
+        const oldMemLen = members.length
+        const currentMem = []
+        for (let x = 0; x < newMemLen; x++) {
+          let checker = false
+          for (let y = 0; y < oldMemLen; y++) {
+            if (newMembers[x].id.toString() === members[y].account_id.toString()) {
+              currentMem.push({
+                account_id: this.ObjectId(newMembers[x].id),
+                sms_text: members[y].sms_text
+              })
+              checker = true
+              break
+            }
+          }
+          if (!checker) {
+            currentMem.push({
+              account_id: this.ObjectId(newMembers[x].id),
+              sms_text: this.package[res.package]
+            })
+          }
+        }
+        res.members = currentMem
+        return res.save()
+      }))
+    })
   }
   checkAccountId ({account_id, license_id}) {
     let self = this
